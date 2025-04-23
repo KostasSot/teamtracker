@@ -14,7 +14,17 @@
   const users = ref([])
   
   onMounted(() => {
-    axios.get('/users')
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No token found')
+      return
+    }
+
+    axios.get('/users', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => {
         users.value = res.data
       })
@@ -22,5 +32,6 @@
         console.error(err)
       })
   })
+
   </script>
   

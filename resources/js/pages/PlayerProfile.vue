@@ -14,13 +14,26 @@
   const player = ref({})
   
   onMounted(() => {
-    axios.get('/players/1/card') // TEMP: Replace 1 with current user ID
+    const token = localStorage.getItem('token')
+    if (!token) {
+      console.error('No token found')
+      return
+    }
+
+    axios.get('/players/1/card', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => {
         player.value = res.data
       })
       .catch(err => {
         console.error(err)
       })
-  })
+})
+
+
+
   </script>
   

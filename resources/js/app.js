@@ -1,25 +1,16 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import axios from 'axios'
+import { createApp, h } from 'vue'
+import { createInertiaApp } from '@inertiajs/inertia-vue3'
+import { InertiaProgress } from '@inertiajs/progress'
 
-axios.defaults.withCredentials = true
-axios.defaults.baseURL = 'http://teamtrackr.test/api'
-!
-
-axios.interceptors.request.use(config => {
-  const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('XSRF-TOKEN='))
-    ?.split('=')[1]
-
-  if (token) {
-    config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token)
-  }
-
-  return config
+createInertiaApp({
+  resolve: name => import(`./pages/${name}.vue`),
+  setup({ el, App, props, plugin }) {
+    createApp({ render: () => h(App, props) })
+      .use(plugin)
+      .mount(el)
+  },
 })
 
-const app = createApp(App)
-app.use(router)
-app.mount('#app')
+
+
+InertiaProgress.init()
